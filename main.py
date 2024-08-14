@@ -21,6 +21,7 @@ from reiniciar_antena import reiniciar
 from definir_mensaje_automatico import definir_mensaje_automatico
 from enviar_mensaje_automatoco_vs import iniciar_envio_masivo_automatico
 from enviar_mensaje_personal import vista_mensaje_personal
+from enviar_mensaje_automatoco_vs import comprobacion_de_mensaje_definido
 
 valid_keys = ['NhqnMHGR074PjBPG', 'anotherkey789012', 'MinuzaFea265/']
 
@@ -65,7 +66,7 @@ velocidades = ["100M/10M", "100M15M", "100M/20M", "100M/25M", "100M/30M", "100M/
                "200M/200M", "250M/250M", "300M/300M", "Seleccion Libre"]
 
 # Función para leer usuarios
-def leer_usuarios(nombre="", ip="", velocidad="", mensualidad=""):
+def leer_usuarios(nombre="", direccion="", telefono=""):
     conn = sqlite3.connect('network_software.db')
     cursor = conn.cursor()
     query = 'SELECT id, nombre, direccion, telefono, api, ip, estado, proximoPago FROM clientes WHERE 1=1'
@@ -74,46 +75,40 @@ def leer_usuarios(nombre="", ip="", velocidad="", mensualidad=""):
     if nombre:
         query += ' AND nombre LIKE ?'
         params.append(f'%{nombre}%')
-    if ip:
-        query += ' AND ip LIKE ?'
-        params.append(f'%{ip}%')
-    if velocidad:
-        query += ' AND velocidad LIKE ?'
-        params.append(f'%{velocidad}%')
-    if mensualidad:
-        query += ' AND mensualidad LIKE ?'
-        params.append(f'%{mensualidad}%')
+    if direccion:
+        query += ' AND direccion LIKE ?'
+        params.append(f'%{direccion}%')
+    if telefono:
+        query += ' AND telefono LIKE ?'
+        params.append(f'%{telefono}%')
     
     cursor.execute(query, params)
     usuarios = cursor.fetchall()
     conn.close()
     return usuarios
 
-# Función para aplicar filtro
-def aplicar_filtro():
-    nombre = entry_nombre.get()
-    ip = entry_ip.get()
-    velocidad = entry_velocidad.get()
-    mensualidad = entry_mensualidad.get()
-    
-    # Limpiar la tabla actual
+# Función para cargar usuarios en la tabla
+def cargar_usuarios():
     for item in tree.get_children():
         tree.delete(item)
-    
-    # Obtener datos filtrados y actualizar la tabla
-    usuarios = leer_usuarios(nombre, ip, velocidad, mensualidad)
+    usuarios = leer_usuarios()
     for usuario in usuarios:
-        # Insertar datos en la tabla
-        item_id = tree.insert("", tk.END, values=usuario)
-        
-        # Colorear la fila en función del estado
-        estado = usuario[6]  # Suponiendo que 'estado' está en la posición 6
-        if estado == "activado":
-            tree.item(item_id, tags=("activado",))
-        elif estado == "suspendido":
-            tree.item(item_id, tags=("suspendido",))
-        elif estado == "desactivado":
-            tree.item(item_id, tags=("desactivado",))
+        estado = usuario[6].lower()
+        tree.insert("", tk.END, values=usuario, tags=(estado,))
+# Función para actualizar la tabla
+def actualizar_tabla():
+    # Limpia la tabla
+    for row in tree.get_children():
+        tree.delete(row)
+    # Vuelve a cargar los datos
+    cargar_usuarios()
+
+# Función para mostrar el menú contextual
+def mostrar_menu_contextual(event):
+    try:
+        menu_contextual.tk_popup(event.x_root, event.y_root)
+    finally:
+        menu_contextual.grab_release()
 
 # Función para crear la ventana principal
 def create_main_window():
@@ -121,6 +116,7 @@ def create_main_window():
     root = tk.Tk()
     root.title("ConnectionApp")
     root.geometry("1200x600")
+
 
     # Crear la barra de menú
     menu_bar = Menu(root)
@@ -134,7 +130,8 @@ def create_main_window():
 
     # Crear el menú Pagos
     pagos_menu = Menu(menu_bar, tearoff=0)
-    pagos_menu.add_command(label="Registrar Pago", command=registrar_pago)
+    pagos_menu.add_command(label="Nombre de wisp", command=nombre_wisp)
+    pagos_menu.add_command(label="Registrar Pago", command=comprobar_archivo_y_llamar_funcion)
     pagos_menu.add_command(label="Ver Pagos", command=ver_pagos)
     menu_bar.add_cascade(label="Pagos", menu=pagos_menu)
 
@@ -145,8 +142,6 @@ def create_main_window():
     herramientas_red_menu.add_command(label="Desbloquear/Bloquear Cliente", command=desbloquear_cliente)
     herramientas_red_menu.add_command(label="Cortes Automáticos", command=cortes_automaticos)
     menu_bar.add_cascade(label="Herramientas de red", menu=herramientas_red_menu)
-
-
     
     herramientas_ubiquiti = Menu(menu_bar, tearoff=0)
     herramientas_ubiquiti.add_command(label="Reiniciar antena", command=reiniciar)
@@ -155,15 +150,9 @@ def create_main_window():
     menu_bar.add_cascade(label="Herramientas Ubiquiti", menu=herramientas_ubiquiti)
 
     # Crear el menú Herramientas de red
-    opciones_wisp = Menu(menu_bar, tearoff=0)
-    opciones_wisp.add_command(label="Nombre de wisp", command=nombre_wisp)
-    menu_bar.add_cascade(label="Opciones de wisp", menu=opciones_wisp)
-
-
-    # Crear el menú Herramientas de red
     opciones_bot = Menu(menu_bar, tearoff=0)
     opciones_bot.add_command(label="Definir mensaje automatico", command=definir_mensaje_automatico)
-    opciones_bot.add_command(label="Enviar mensaje automatico", command=iniciar_envio_masivo_automatico)
+    opciones_bot.add_command(label="Enviar mensaje automatico", command=comprobacion_de_mensaje_definido)
     opciones_bot.add_command(label="Enviar mensaje personalizado", command=vista_mensaje_personal)
     menu_bar.add_cascade(label="BotWhatsApp", menu=opciones_bot)
 
@@ -177,38 +166,31 @@ def create_main_window():
     # Mostrar la barra de menú
     root.config(menu=menu_bar)
 
-    # Crear marco para filtros
-    marco_filtros = tk.Frame(root)
-    marco_filtros.pack(pady=10)
+    # Crear un marco principal
+    marco_principal = tk.Frame(root)
+    marco_principal.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-    # Campos de filtro
-    tk.Label(marco_filtros, text="Nombre:").grid(row=0, column=0, padx=5)
-    global entry_nombre
-    entry_nombre = tk.Entry(marco_filtros)
-    entry_nombre.grid(row=0, column=1, padx=5)
+    # Crear un marco para los botones a la izquierda
+    marco_botones = tk.Frame(marco_principal)
+    marco_botones.pack(side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
 
-    tk.Label(marco_filtros, text="IP:").grid(row=1, column=0, padx=5)
-    global entry_ip
-    entry_ip = tk.Entry(marco_filtros)
-    entry_ip.grid(row=1, column=1, padx=5)
+    # Crear botones en el marco de botones
+    botones = [
+        ("Crear Cliente", crear_cliente),
+        ("Ver Cliente", ver_cliente),
+        ("Buscar Cliente", buscar_cliente),
+        ("Registrar Pago", comprobar_archivo_y_llamar_funcion)
+    ]
 
-    tk.Label(marco_filtros, text="Velocidad:").grid(row=2, column=0, padx=5)
-    global entry_velocidad
-    entry_velocidad = ttk.Combobox(marco_filtros, values=velocidades)
-    entry_velocidad.grid(row=2, column=1, padx=5)
+    for i, (text, command) in enumerate(botones):
+        row = i // 2  # Determina la fila (2 botones por fila)
+        col = i % 2   # Determina la columna (0 o 1)
+        boton = tk.Button(marco_botones, text=text, command=command, width=15)
+        boton.grid(row=row, column=col, padx=5, pady=5)
 
-    tk.Label(marco_filtros, text="Mensualidad:").grid(row=3, column=0, padx=5)
-    global entry_mensualidad
-    entry_mensualidad = tk.Entry(marco_filtros)
-    entry_mensualidad.grid(row=3, column=1, padx=5)
-
-    # Botón para aplicar filtro
-    boton_filtro = tk.Button(marco_filtros, text="Aplicar Filtro", command=aplicar_filtro)
-    boton_filtro.grid(row=4, columnspan=2, pady=10)
-
-    # Crear Treeview
+    # Crear Treeview para mostrar datos
     global tree
-    tree = ttk.Treeview(root, columns=("Id", "Nombre", "Direccion", "Telefono", "api", "IP", "Estado", "ProximoPago"), show="headings")
+    tree = ttk.Treeview(marco_principal, columns=("Id", "Nombre", "Direccion", "Telefono", "api", "IP", "Estado", "ProximoPago"), show="headings")
     
     # Definir las columnas
     tree.heading("Id", text="Id")
@@ -234,22 +216,20 @@ def create_main_window():
     tree.tag_configure("suspendido", background="lightcoral")
     tree.tag_configure("desactivado", background="lightgray")
     
-    # Crear menú contextual
+    # Colocar el Treeview en la ventana principal
+    tree.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+    
+    # Crear el menú contextual
+    global menu_contextual
     menu_contextual = Menu(root, tearoff=0)
-    menu_contextual.add_command(label="Actualizar", command=aplicar_filtro)
-
-    def mostrar_menu_contextual(event):
-        menu_contextual.post(event.x_root, event.y_root)
-
-    # Asociar el menú contextual al Treeview
+    menu_contextual.add_command(label="Actualizar", command=actualizar_tabla)
+    
+    # Asociar el evento de clic derecho al Treeview
     tree.bind("<Button-3>", mostrar_menu_contextual)
     
-    tree.pack(expand=True, fill="both")
-    # Insertar datos iniciales en la tabla
-    aplicar_filtro()
+    # Cargar usuarios en la tabla al iniciar
+    cargar_usuarios()
     
-    tree.pack(expand=True, fill="both")
-
     root.mainloop()
 
 def crear_cliente():
@@ -261,8 +241,21 @@ def ver_cliente():
 def buscar_cliente():
     ventana_buscar_actualizar()
 
-def registrar_pago():
-    ventana_buscar_cliente_pagar()
+
+def comprobar_archivo_y_llamar_funcion():
+    # Nombre del archivo que deseas verificar
+    archivo = "nombre_wisp.json"
+    
+    # Verificar si el archivo existe en el directorio actual
+    if os.path.exists(archivo):
+        # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+        ventana_buscar_cliente_pagar()
+    else:
+        # Si el archivo no existe, imprime un mensaje al usuario
+        messagebox.showerror("Advertencia", f"No ha definido un nombre de WISP ni un mensaje. Por favor, definalos para poder crear sus recibos")
+        nombre_wisp()
+
+
 
 def ver_pagos():
     mostrar_datos()

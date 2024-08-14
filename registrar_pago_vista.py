@@ -4,6 +4,8 @@ from tkinter import ttk
 from registrar_pago import registrar_pago_recibo
 from datetime import *
 from tkinter import messagebox
+import os
+from vista_credenciales_microtik import vista_credenciales
 
 # Función para buscar cliente por ID y rellenar los widgets Entry
 def buscar_cliente_por_id(id_cliente):
@@ -30,6 +32,19 @@ def buscar_cliente_por_id(id_cliente):
 
     else:
         messagebox.showinfo("Información", "Cliente no encontrado.")
+
+def comprobacion_de_las_credenciales():
+    # Nombre del archivo que deseas verificar
+    archivo = "credenciales.json"
+    
+    # Verificar si el archivo existe en el directorio actual
+    if os.path.exists(archivo):
+        # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+        obtener_datos_registrar_pago()
+    else:
+        # Si el archivo no existe, imprime un mensaje al usuario
+        messagebox.showerror("Advertencia", f"Para poder registrar el pago, debe ingresar el usuario, password e ip del microtik. Para funciones futuras")
+        vista_credenciales()
 
 def obtener_datos_registrar_pago():
     id_cliente = id_entry.get()
@@ -91,7 +106,7 @@ def ventana_buscar_cliente_pagar():
     frame_botones.grid(column=0, row=8, columnspan=4, padx=10, pady=10)
 
     # Botón Guardar
-    guardar = Button(frame_botones, text="Registrar Pago", width=25, command=obtener_datos_registrar_pago)
+    guardar = Button(frame_botones, text="Registrar Pago", width=25, command=comprobacion_de_las_credenciales)
     guardar.pack(side=LEFT, padx=5)
     # Botón Cancelar
     cancela = Button(frame_botones, text="Cancelar", width=25, command=vistaRegistro.destroy)

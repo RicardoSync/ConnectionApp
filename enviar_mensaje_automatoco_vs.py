@@ -3,6 +3,8 @@ import requests
 import json
 from tkinter import messagebox
 import time  # Importar la biblioteca para manejar pausas
+import os
+from definir_mensaje_automatico import definir_mensaje_automatico
 
 def leer_credenciales():
     with open('mensaje_automatico.json', 'r') as archivo:
@@ -29,6 +31,21 @@ def obtener_datos_de_base_datos():
     conn.close()
 
     return resultados
+
+
+def comprobacion_de_mensaje_definido():
+    # Nombre del archivo que deseas verificar
+    archivo = "mensaje_automatico.json"
+    
+    # Verificar si el archivo existe en el directorio actual
+    if os.path.exists(archivo):
+        # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+        iniciar_envio_masivo_automatico()
+    else:
+        # Si el archivo no existe, imprime un mensaje al usuario
+        messagebox.showerror("Advertencia", f"No se a guardado ningun mensaje automatico. Por favor guarda primero uno")
+        definir_mensaje_automatico()
+
 
 def iniciar_envio_masivo_automatico():
     credenciales = leer_credenciales()
