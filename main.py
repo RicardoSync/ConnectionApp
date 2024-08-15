@@ -23,7 +23,7 @@ from enviar_mensaje_automatoco_vs import iniciar_envio_masivo_automatico
 from enviar_mensaje_personal import vista_mensaje_personal
 from enviar_mensaje_automatoco_vs import comprobacion_de_mensaje_definido
 from ping import iniciar_tarea
-from queues import mostrar_leases
+from leases import mostrar_leases
 
 
 valid_keys = ['NhqnMHGR074PjBPG', 'anotherkey789012', 'MinuzaFea265/']
@@ -59,7 +59,20 @@ def load_activation_key():
     return None
 
 
+def crear_usuario(username, password):
+    conn = sqlite3.connect('network_software.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO usuarios (username, password) VALUES (?, ?)", (username, password))
+    conn.commit()
+    conn.close()
 
+def verificar_usuario(username, password):
+    conn = sqlite3.connect('network_software.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM usuarios WHERE username = ? AND password = ?", (username, password))
+    user = cursor.fetchone()
+    conn.close()
+    return user is not None
 
 
 
@@ -284,25 +297,86 @@ def acerca_de():
 def version():
     messagebox.askyesno("Informacion", "Software Connection para wisp desarrollado por Ing Escobedo. Con la version 0.9")   
     
+def crear_usuario_y_contrasena():
+    def crear_usuario_func():
+        username = username_entry.get()
+        password = password_entry.get()
+        if username and password:
+            crear_usuario(username, password)
+            messagebox.showinfo("Usuario creado", "Usuario y contraseña creados exitosamente.")
+            user_window.destroy()
+            create_main_window()
+        else:
+            messagebox.showwarning("Advertencia", "Por favor, ingrese un nombre de usuario y una contraseña.")
+    
+    # Crear ventana para ingresar usuario y contraseña
+    user_window = Tk()
+    user_window.title("Crear Usuario")
+    user_window.geometry("300x150")
+    
+    Label(user_window, text="Nombre de usuario:").pack(pady=5)
+    username_entry = Entry(user_window)
+    username_entry.pack(pady=5)
+
+    Label(user_window, text="Contraseña:").pack(pady=5)
+    password_entry = Entry(user_window, show="*")
+    password_entry.pack(pady=5)
+
+    Button(user_window, text="Crear Usuario", command=crear_usuario_func).pack(pady=10)
+    
+    user_window.mainloop()
+
+def iniciar_sesion():
+    def verificar_sesion():
+        username = username_entry.get()
+        password = password_entry.get()
+        if verificar_usuario(username, password):
+            login_window.destroy()
+            create_main_window()
+        else:
+            messagebox.showerror("Error de inicio de sesión", "Nombre de usuario o contraseña incorrectos.")
+    
+    login_window = Tk()
+    login_window.title("Iniciar Sesión")
+    login_window.geometry("300x150")
+    
+    Label(login_window, text="Nombre de usuario:").pack(pady=5)
+    username_entry = Entry(login_window)
+    username_entry.pack(pady=5)
+
+    Label(login_window, text="Contraseña:").pack(pady=5)
+    password_entry = Entry(login_window, show="*")
+    password_entry.pack(pady=5)
+
+    Button(login_window, text="Iniciar Sesión", command=verificar_sesion).pack(pady=10)
+    
+    login_window.mainloop()
+
 # Verificar si ya hay una clave de activación almacenada
 stored_key = load_activation_key()
 
 if stored_key and verify_activation_key(stored_key):
-    print('Activation already verified.')
-    create_main_window()
-
+    # Verificar si ya se creó un usuario
+    conn = sqlite3.connect('network_software.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT COUNT(*) FROM usuarios")
+    user_count = cursor.fetchone()[0]
+    conn.close()
+    
+    if user_count == 0:
+        crear_usuario_y_contrasena()
+    else:
+        iniciar_sesion()
 else:
     # Crear la ventana de activación
     activation_window = Tk()
-    activation_window.title("Activacion")
+    activation_window.title("Activación")
     activation_window.geometry("300x150")
     activation_window.resizable(False, False)
 
-    # Establecer el icono de la ventana de activación
-
     activation_key = StringVar()
 
-    Label(activation_window, text="Ingresa la llave de activacion:").pack(pady=10)
+    Label(activation_window, text="Ingresa la llave de activación:").pack(pady=10)
     Entry(activation_window, textvariable=activation_key).pack(pady=5)
     Button(activation_window, text="Activar", command=check_activation).pack(pady=10)
 

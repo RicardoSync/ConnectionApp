@@ -34,7 +34,15 @@ def crear_base_datos():
             FOREIGN KEY (nombreCliente) REFERENCES clientes(nombre)
         )
     ''')
-    
+
+    # Crear tabla de usuarios
+    cursor.execute('''CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY,
+        username TEXT UNIQUE,
+        password TEXT
+    )''')
+
+
     conn.commit()
     conn.close()
     print("Creacion de la base de datos con exito")
