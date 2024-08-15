@@ -13,7 +13,7 @@ from ver_pagos_tabla import mostrar_datos
 from vista_credenciales_microtik import vista_credenciales
 from cambio_de_velocidad import ventana_cambio_velocidad
 from bloqueos_desbloqueo import vista_bloqueo_desbloque
-from bloqueo_automatico import gestionar_pagos_y_bloqueos
+from bloqueo_automatico import comprobar_funcion_gestion_bloqueos
 import tkinter as tk
 import sqlite3
 from name_wisp import nombre_wisp
@@ -22,6 +22,9 @@ from definir_mensaje_automatico import definir_mensaje_automatico
 from enviar_mensaje_automatoco_vs import iniciar_envio_masivo_automatico
 from enviar_mensaje_personal import vista_mensaje_personal
 from enviar_mensaje_automatoco_vs import comprobacion_de_mensaje_definido
+from ping import iniciar_tarea
+from queues import mostrar_leases
+
 
 valid_keys = ['NhqnMHGR074PjBPG', 'anotherkey789012', 'MinuzaFea265/']
 
@@ -137,17 +140,16 @@ def create_main_window():
 
     # Crear el menú Herramientas de red
     herramientas_red_menu = Menu(menu_bar, tearoff=0)
+    herramientas_red_menu.add_command(label="Enviar Ping", command=iniciar_tarea)
     herramientas_red_menu.add_command(label="Credenciales Microtik", command=credenciales_microtik)
     herramientas_red_menu.add_command(label="Cambio Velocidad", command=ventana_cambio_velocidad)
     herramientas_red_menu.add_command(label="Desbloquear/Bloquear Cliente", command=desbloquear_cliente)
     herramientas_red_menu.add_command(label="Cortes Automáticos", command=cortes_automaticos)
+    herramientas_red_menu.add_command(label="Mostrar Clientes Leases", command=mostrar_leases)
+    herramientas_red_menu.add_command(label="Reiniciar antena", command=reiniciar)
     menu_bar.add_cascade(label="Herramientas de red", menu=herramientas_red_menu)
     
-    herramientas_ubiquiti = Menu(menu_bar, tearoff=0)
-    herramientas_ubiquiti.add_command(label="Reiniciar antena", command=reiniciar)
-    herramientas_ubiquiti.add_command(label="Cambio Velocidad", command=proximamente)
-    herramientas_ubiquiti.add_command(label="Informacion", command=proximamente)
-    menu_bar.add_cascade(label="Herramientas Ubiquiti", menu=herramientas_ubiquiti)
+
 
     # Crear el menú Herramientas de red
     opciones_bot = Menu(menu_bar, tearoff=0)
@@ -267,7 +269,8 @@ def bloquear_cliente():
     vista_bloqueo_desbloque()
 
 def cortes_automaticos():
-    gestionar_pagos_y_bloqueos()
+    comprobar_funcion_gestion_bloqueos()
+
         
 def desbloquear_cliente():
     vista_bloqueo_desbloque()

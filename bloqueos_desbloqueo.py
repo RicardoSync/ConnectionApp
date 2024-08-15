@@ -5,6 +5,8 @@ from tkinter import messagebox
 from tkinter import ttk
 import tkinter as tk
 import json
+import os
+from vista_credenciales_microtik import vista_credenciales
 
 def leer_credenciales():
         with open('credenciales.json', 'r') as archivo:
@@ -114,9 +116,7 @@ def vista_bloqueo_desbloque():
     def obtener_datos():
         id_cliente = id_entry.get()
         buscar_cliente_por_id(id_cliente)
-    
 
-            
     def obtener_datos_bloque():            
         credenciales = leer_credenciales()
         hostname = credenciales['ip']
@@ -134,6 +134,38 @@ def vista_bloqueo_desbloque():
         client_ip = ip_entry.get()
         new_speed = velocidad_entry.get()
         desbloquear_cliente(hostname, username, password, client_ip, new_speed)
+
+
+
+    def comprobar_archivo_y_llamar_funcion_bloqueo():
+        # Nombre del archivo que deseas verificar
+        archivo = "credenciales.json"
+        
+        # Verificar si el archivo existe en el directorio actual
+        if os.path.exists(archivo):
+            # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+            obtener_datos_bloque()
+        else:
+            # Si el archivo no existe, imprime un mensaje al usuario
+            messagebox.showerror("Advertencia", f"No se ha definido las credenciales para acceder a Microtik")
+            vista_credenciales()
+           
+
+    def comprobar_archivo_y_llamar_funcion_desbloqueo():
+        # Nombre del archivo que deseas verificar
+        archivo = "credenciales.json"
+        
+        # Verificar si el archivo existe en el directorio actual
+        if os.path.exists(archivo):
+            # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+            obtener_datos_desbloque()
+        else:
+            # Si el archivo no existe, imprime un mensaje al usuario
+            messagebox.showerror("Advertencia", f"No se ha definido las credenciales para acceder a Microtik")
+            vista_credenciales()
+           
+
+            
 
     vista_cambio_velocidad = tk.Tk()
     vista_cambio_velocidad.title("Bloqueo / Desbloqueo")
@@ -186,10 +218,10 @@ def vista_bloqueo_desbloque():
     frame_botones.grid(column=0, row=7, columnspan=4, padx=10, pady=10)
 
     # Botón Guardar
-    guardar = tk.Button(frame_botones, text="Bloquear", width=25, command=obtener_datos_bloque)
+    guardar = tk.Button(frame_botones, text="Bloquear", width=25, command=comprobar_archivo_y_llamar_funcion_bloqueo)
     guardar.pack(side=tk.LEFT, padx=5)
 
-    bloquear = tk.Button(frame_botones, text="Desbloquear", width=25, command=obtener_datos_desbloque)
+    bloquear = tk.Button(frame_botones, text="Desbloquear", width=25, command=comprobar_archivo_y_llamar_funcion_desbloqueo)
     bloquear.pack(side=tk.LEFT, padx=5)
 
     # Botón Cancelar

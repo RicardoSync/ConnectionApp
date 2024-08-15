@@ -3,6 +3,8 @@ import datetime
 import paramiko
 from tkinter import messagebox
 import json 
+import os
+from vista_credenciales_microtik import vista_credenciales
 
 def leer_credenciales():
     with open('credenciales.json', 'r') as archivo:
@@ -76,3 +78,18 @@ def gestionar_pagos_y_bloqueos():
 
     # Cerrar la conexión a la base de datos
     conn.close()
+
+
+def comprobar_funcion_gestion_bloqueos():
+    # Nombre del archivo que deseas verificar
+    archivo = "credenciales.json"
+    
+    # Verificar si el archivo existe en el directorio actual
+    if os.path.exists(archivo):
+        # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+        gestionar_pagos_y_bloqueos()
+    else:
+        # Si el archivo no existe, imprime un mensaje al usuario
+        messagebox.showerror("Advertencia", f"No ha definido ninguna credencial para Microtik, definelo primero")
+        vista_credenciales()
+

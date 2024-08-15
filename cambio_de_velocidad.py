@@ -5,8 +5,8 @@ import sqlite3
 from tkinter import ttk
 import tkinter as tk
 import json
-
-
+import os
+from vista_credenciales_microtik import vista_credenciales
 
 def buscar_cliente_por_id(id_cliente):
     cliente_id = id_cliente
@@ -105,6 +105,21 @@ def ventana_cambio_velocidad():
         new_speed = velocidad_subida + medicion_subida + "/" + velocidad_bajada + medicion_bajada
         change_client_speed_mikrotik(hostname, username, password, client_ip, new_speed)
 
+
+    def comprobacion_de_las_credenciales():
+        # Nombre del archivo que deseas verificar
+        archivo = "credenciales.json"
+        
+        # Verificar si el archivo existe en el directorio actual
+        if os.path.exists(archivo):
+            # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+            funcion_perrona_de_velocidad()
+        else:
+            # Si el archivo no existe, imprime un mensaje al usuario
+            messagebox.showerror("Advertencia", f"Para poder registrar el pago, debe ingresar el usuario, password e ip del microtik. Para funciones futuras")
+            vista_credenciales()        
+
+
     tamano = 20
 
     valores = ["M", "k"]
@@ -173,7 +188,7 @@ def ventana_cambio_velocidad():
     frame_botones.grid(column=0, row=7, columnspan=4, padx=10, pady=10)
 
     # Botón Guardar
-    guardar = tk.Button(frame_botones, text="Cambiar Velocidad", width=25, command=funcion_perrona_de_velocidad)
+    guardar = tk.Button(frame_botones, text="Cambiar Velocidad", width=25, command=comprobacion_de_las_credenciales)
     guardar.pack(side=tk.LEFT, padx=5)
 
     # Botón Cancelar
