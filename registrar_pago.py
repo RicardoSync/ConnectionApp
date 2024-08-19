@@ -153,7 +153,7 @@ def crear_recibo_imagen(titulo, mensaje, nombre, fecha, monto, proximo_pago, con
     mensaje = f"Recibo de pago guardado como {ruta_salida}"
     titulo = "Recibo generado"
 
-    mostrar_notificacion(titulo, mensaje)
+    messagebox.showinfo("Recibo creado", "Se registro de manera correcta el recibo")
 
     # Abrir el archivo
     if platform.system() == "Windows":

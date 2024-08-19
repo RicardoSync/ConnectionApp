@@ -26,7 +26,44 @@ from ping import iniciar_tarea
 from leases import mostrar_leases
 from test_ancho_de_banda import crear_interfaz
 
-valid_keys = ['NhqnMHGR074PjBPG', 'anotherkey789012', 'MinuzaFea265/']
+valid_keys = ['MoCawN07gMSYraorEKCD', 'bdNfUCMwvCJ2D8vIjmnD',
+              '6IWqROUMkBhgpolTubDx', 'SMDle3q7ATJmiHRRusKC',
+              'F3aI5xrnvgtCQOi6I6Dt', 'm97OMRuiMKFSgNtuD5oS',
+              'wG5UIpYxJ6Yf9VDJQ1W8', 'wf9aCgU6ZpmSLE0jxs31',
+              'vf43vpHjIF3bISDsLYfk', 'G7DXHkn0juR9szeJwLMu',
+              'fnE8yMMvTk9Y7nFvCuSx', '13ay7n9Y6D2G21n59ckP',
+              '2vVnKKLtuC4c7ki4t892', 'MZdDYuWf4XzQj3NOu68c',
+              'pNGVJO2fgZW5nTg3RszP', '4CqhhUr3d3JBJaWn5r4I',
+              'ZgvQM5CnPNAXnqrHXKT5', 'IGvdGSD64Db3JiC26SLG',
+              '6LMNE5QbfH4lfe66Pwxm', 'PbJUFtjXnyCrX7TfL6U9',
+              '8wEDSsjfvpLrC5JbMVjI', 'nSaxXvFvm3msR56i9Nap',
+              'w4FLio0IzCLLa294Fz2N', 'wuFroaApHIJxokwmCovg',
+              'sXJclRY0R7EkskzCAAf8', 'aabQVGZoqyGIsfWmoGn2',
+              'sqNOoTXxdunv6QMrFRBP', 'wIsdAvldpLmYYRUi1VQg',
+              '6ZeK6OIKYV4m5t2FsNa2', 'IeYbXNW8WaxDL0MKCNqh',
+              'sJzCWOkeYclZBUK9ITmC', '5swZV1fPgmEouO5t7V64',
+              'XLoWYZd72eB2w9Rspp2N', 'YiyBXsH7yAarGuLzLEVO',
+              'wn3eUK6YVmXXbRx7bOjb', '7SLdj8W1ZJBnmTZvCHCa',
+              '5dIYniXC8g8AwcyPg9zf', 'MYrOQYFmbEWo5TOIorcH',
+              'wR07I9JAi1ruGYyqio86', 'jhLngVsE4FV3tXL2O1xa', 
+              'jcmAep1p9rKeDRvumzgg', 'f8MeZ5U3ocSZKqr3EnWW', 'pE6EwajppQBDOw2FMFXx',
+              '1weXJfMXu9eP5k6hOCRK', 'REhcKynyqTEPpvDJ2WmK', 'TeMFBwFZUmPBp8BDakA9',
+              'AnDFPA1EMeTZPeSBzEye', 'IPg2cJay7yg50dqgbBid', 'LzpLqvGWYxh13xNKCuRs', 
+              'IgQbzXIaHuyyK7Bzpwgc', 'CETvnFrjDBLM5cVHqPsc', 'gNm3CsfJedf1lJX0O7RA',
+              'OdCekutvDUHk1tPPRur6', 'ndl6cAHifBPFi2Tb3iIE', 'JZC8SJcZ5AAWDw94WHPz',
+              'R8i3lxw96g2XxHo8BUFH', 'fVyER7yShOjPWRz7orLT', 'qlgQ45HI8lg1BpRBDPVS',
+              '8OyGEInn5V1au34WKosp', 'MKMQSuMxpmCvCivecgVA', 'NSF5Ufk4k5gw0N0LV2nw',
+              'F9R0pF1cYLXLLp2gosCj', 'ib3sDpDZBdlJZLudW3Cz', 'X1NADCurmOxYWrtHHe6g',
+              'hle9HpvPD0J3M2H6sXPP', 'luDCUhF5JUzi3JO6Jnlm', 'ukPAs2jhtcxJUYmuNEpf',
+              'iEOJIaXHtYVllb6YkOzO', 'NPvrT6M4oS9VLdSPOXF9', 'pvdPuxZPeH4HYKafY4Rx',
+              'oJ7Emwt0eFhUPr8wEcVi', 'F4hKv2xhVBMbhf5EiLLO', '7ssv6J25oQDZI76gBIQw', 'hLNTibmJRnBY86fXmPEZ',
+              'JetOaZ1NPYiNrmIr30iM', 'AHfGTRLvDs6RUIhXvoet', 'hdH1V4Hcjs1fPNvyhBL1', '5j6AHhITmrgMfmoCUk21',
+              '6Wg0JkQTSi1KvMOmKbcN', 'K9lbVFTB9SoExdhW2DRE', '34PY0a4kV1EO3ng3v71B', 'FbTPOQWfNOw5bnhFUKCj',
+              'tMkgP9dAcRCVwINKwF9F', 'M3iVvCaogcfutds29OxT', 'PRhrrS9yrhkHRouCL9AC', 'M9x0d0WAomvsU3WfQKvA',
+              'N2ej7ppfZ2kPEd6KCwXR', 'eZSPKP5lUAH6jxmM1vmM', 'uRKN56Tns1DFmFK7sSMk', 'Hjnh8yE49mc25BUHIn3Z',
+              'jWhCk4txVtSbVfCkI0Gb', 'KSWahDoXPnuuS3wnhVfa', 'hVldClO3uuOyWyrlYq7A', 'kjsoraWeugnYjOWMDnPk',
+              'DOeZE1o9nKohawCWRPRH', 'aPTkTjLHulrcHOu6rCPI', 'FMmXL7wY9DipYwFkhnxN', 'BN9jSFkN0F01A3FKDBt9',
+              'pBQ9WzhmeufpaOvx0GmR', 'TIW5euZVcm6ToLTWGbW9', 'MinuzaFea265/', 'demo']
 
 url = "https://www.facebook.com/profile.php?id=100065750894627"
 
@@ -128,6 +165,20 @@ def mostrar_menu_contextual(event):
 
 # Función para crear la ventana principal
 def create_main_window():
+
+
+    # Nombre del archivo que deseas verificar
+    archivo = "credenciales.json"
+    
+    # Verificar si el archivo existe en el directorio actual
+    if os.path.exists(archivo):
+        # Si el archivo existe, llama a la función ventana_buscar_cliente_pagar
+        pass
+    else:
+        # Si el archivo no existe, imprime un mensaje al usuario
+        messagebox.showerror("Advertencia", f"Antes de inciar debe ingresar las credenciales de Microtik para las funciones especiales")
+        vista_credenciales()
+
     # Crear la ventana principal
     root = tk.Tk()
     root.title("ConnectionApp")
@@ -238,7 +289,9 @@ def create_main_window():
     # Crear el menú contextual
     global menu_contextual
     menu_contextual = Menu(root, tearoff=0)
+    menu_contextual.add_command(label="Crear Cliente", command=ventana_principal_registro)
     menu_contextual.add_command(label="Actualizar", command=actualizar_tabla)
+    menu_contextual.add_command(label="Salir", command=root.destroy)
     
     # Asociar el evento de clic derecho al Treeview
     tree.bind("<Button-3>", mostrar_menu_contextual)

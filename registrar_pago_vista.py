@@ -116,4 +116,3 @@ def ventana_buscar_cliente_pagar():
     cancela.pack(side=LEFT, padx=5)
 
     vistaRegistro.mainloop()
-
