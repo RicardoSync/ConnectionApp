@@ -46,12 +46,7 @@ def ventana_principal_registro():
         api = entApi.get()
         registrar_cliente(nombre, direccion, telefono, equipos, ip, velocidad, fechaInstalacion, proximoPago, mensualidad, estado, api)
         limpiar()
-        notification.notify(
-            title="Registro",
-            message="Cliente registrado de manera correcta",
-            app_name='ConnectionApp',
-            timeout=10
-        )
+        messagebox.showinfo("Registro", "Cliente registrado: " + nombre)
         vistaRegistro.destroy()
 
     vistaRegistro = Tk()

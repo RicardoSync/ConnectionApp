@@ -24,7 +24,7 @@ from enviar_mensaje_personal import vista_mensaje_personal
 from enviar_mensaje_automatoco_vs import comprobacion_de_mensaje_definido
 from ping import iniciar_tarea
 from leases import mostrar_leases
-
+from test_ancho_de_banda import crear_interfaz
 
 valid_keys = ['NhqnMHGR074PjBPG', 'anotherkey789012', 'MinuzaFea265/']
 
@@ -154,6 +154,7 @@ def create_main_window():
     # Crear el menú Herramientas de red
     herramientas_red_menu = Menu(menu_bar, tearoff=0)
     herramientas_red_menu.add_command(label="Enviar Ping", command=iniciar_tarea)
+    herramientas_red_menu.add_command(label="Iniciar Fast", command=crear_interfaz)
     herramientas_red_menu.add_command(label="Credenciales Microtik", command=credenciales_microtik)
     herramientas_red_menu.add_command(label="Cambio Velocidad", command=ventana_cambio_velocidad)
     herramientas_red_menu.add_command(label="Desbloquear/Bloquear Cliente", command=desbloquear_cliente)
@@ -312,8 +313,8 @@ def crear_usuario_y_contrasena():
     # Crear ventana para ingresar usuario y contraseña
     user_window = Tk()
     user_window.title("Crear Usuario")
-    user_window.geometry("300x150")
-    
+    user_window.geometry("300x250")
+    user_window.resizable(False, False)
     Label(user_window, text="Nombre de usuario:").pack(pady=5)
     username_entry = Entry(user_window)
     username_entry.pack(pady=5)
@@ -338,8 +339,8 @@ def iniciar_sesion():
     
     login_window = Tk()
     login_window.title("Iniciar Sesión")
-    login_window.geometry("300x150")
-    
+    login_window.geometry("300x250")
+    login_window.resizable(False,False)
     Label(login_window, text="Nombre de usuario:").pack(pady=5)
     username_entry = Entry(login_window)
     username_entry.pack(pady=5)

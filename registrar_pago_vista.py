@@ -108,6 +108,9 @@ def ventana_buscar_cliente_pagar():
     # Botón Guardar
     guardar = Button(frame_botones, text="Registrar Pago", width=25, command=comprobacion_de_las_credenciales)
     guardar.pack(side=LEFT, padx=5)
+
+    ver_pagos = Button(frame_botones, text="Ver/Buscar Pagos", width=25, command=comprobacion_de_las_credenciales)
+    ver_pagos.pack(side=LEFT, padx=5)
     # Botón Cancelar
     cancela = Button(frame_botones, text="Cancelar", width=25, command=vistaRegistro.destroy)
     cancela.pack(side=LEFT, padx=5)

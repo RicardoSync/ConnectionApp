@@ -102,4 +102,3 @@ def mostrar_datos(filtro=None, filtro_var=None, entry_nombre=None, entry_mes_ani
     tk.Button(filtro_frame, text="Aplicar Filtro", command=lambda: aplicar_filtro(filtro_var, entry_nombre, entry_mes_anio)).grid(row=1, column=4, padx=5, pady=5)
 
     ventana.mainloop()
-
