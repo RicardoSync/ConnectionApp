@@ -25,6 +25,13 @@ from enviar_mensaje_automatoco_vs import comprobacion_de_mensaje_definido
 from ping import iniciar_tarea
 from leases import mostrar_leases
 from test_ancho_de_banda import crear_interfaz
+import platform
+from carpeta_recibos  import crear_ventana
+from pathlib import Path
+from cambiar_logo import llamar_gestor_logo
+from usuarios import usuarios_ventana
+from test_mk import inicar_prueba
+from test_internet import inicio_de_test
 
 valid_keys = ['MoCawN07gMSYraorEKCD', 'bdNfUCMwvCJ2D8vIjmnD',
               '6IWqROUMkBhgpolTubDx', 'SMDle3q7ATJmiHRRusKC',
@@ -167,6 +174,7 @@ def mostrar_menu_contextual(event):
 def create_main_window():
 
 
+
     # Nombre del archivo que deseas verificar
     archivo = "credenciales.json"
     
@@ -184,9 +192,19 @@ def create_main_window():
     root.title("ConnectionApp")
     root.geometry("1200x600")
 
-
+    # Detectar el sistema operativo
+    if platform.system() == "Windows":
+        # Establecer el ícono de la aplicación en Windows
+        icon_path = "icons/icono.ico"  # Reemplaza con la ruta de tu archivo .ico
+        root.iconbitmap(icon_path)
+    elif platform.system() == "Linux":
+        # Establecer el ícono de la aplicación en Linux usando un archivo .png
+        icon_path = "icons/logo.png"  # Reemplaza con la ruta de tu archivo .png
+        img = tk.PhotoImage(file=icon_path)
+        root.iconphoto(True, img)
     # Crear la barra de menú
     menu_bar = Menu(root)
+
 
     # Crear el menú Cliente
     cliente_menu = Menu(menu_bar, tearoff=0)
@@ -200,6 +218,7 @@ def create_main_window():
     pagos_menu.add_command(label="Nombre de wisp", command=nombre_wisp)
     pagos_menu.add_command(label="Registrar Pago", command=comprobar_archivo_y_llamar_funcion)
     pagos_menu.add_command(label="Ver Pagos", command=ver_pagos)
+    pagos_menu.add_command(label="Carpeta Pagos", command=crear_ventana)
     menu_bar.add_cascade(label="Pagos", menu=pagos_menu)
 
     # Crear el menú Herramientas de red
@@ -230,6 +249,14 @@ def create_main_window():
     creacion_base.add_command(label="Salir", command=root.destroy)
     menu_bar.add_cascade(label="Información", menu=creacion_base)
 
+
+    configuracion = Menu(menu_bar, tearoff=0)
+    configuracion.add_command(label="Cambiar logo recibo", command=llamar_gestor_logo)
+    configuracion.add_command(label="Cambiar usuario y clave", command=usuarios_ventana)
+    configuracion.add_command(label="Prueba de Conexion Microtik", command=inicar_prueba)
+    configuracion.add_command(label="Prueba de Conexion Internet", command=inicio_de_test)
+    menu_bar.add_cascade(label="Configuracion", menu=configuracion)
+
     # Mostrar la barra de menú
     root.config(menu=menu_bar)
 
@@ -246,7 +273,9 @@ def create_main_window():
         ("Crear Cliente", crear_cliente),
         ("Ver Cliente", ver_cliente),
         ("Buscar Cliente", buscar_cliente),
-        ("Registrar Pago", comprobar_archivo_y_llamar_funcion)
+        ("Registrar Pago", comprobar_archivo_y_llamar_funcion),
+        ("Bloqueos", desbloquear_cliente)
+
     ]
 
     for i, (text, command) in enumerate(botones):
