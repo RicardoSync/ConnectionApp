@@ -7,13 +7,44 @@ import tkinter as tk
 import json
 import os
 from vista_credenciales_microtik import vista_credenciales
+import sqlite3
 
 def leer_credenciales():
         with open('credenciales.json', 'r') as archivo:
             datos = json.load(archivo)
             return datos
 
-def bloquear_cliente(hostname, username, password, client_ip, new_speed):
+def actualizar_estado_cliente(cliente_id, nuevo_estado):
+    # Conectar a la base de datos SQLite
+    conn = sqlite3.connect("network_software.db")
+    cursor = conn.cursor()
+    
+    try:
+        # Actualizar la columna 'estado' para el cliente con el id dado
+        cursor.execute('''
+            UPDATE clientes
+            SET estado = ?
+            WHERE id = ?
+        ''', (nuevo_estado, cliente_id))
+        
+        # Confirmar los cambios
+        conn.commit()
+        
+        # Comprobar si se actualizó alguna fila
+        if cursor.rowcount > 0:
+            print(f"El estado del cliente con ID {cliente_id} ha sido actualizado a '{nuevo_estado}'.")
+        else:
+            print(f"No se encontró un cliente con ID {cliente_id}.")
+    
+    except sqlite3.Error as e:
+        print(f"Error al actualizar el estado del cliente: {e}")
+    
+    finally:
+        # Cerrar la conexión a la base de datos
+        conn.close()
+
+
+def bloquear_cliente(id_cliente, hostname, username, password, client_ip, new_speed):
         port = 22  # Puerto SSH, generalmente es 22
 
         # Comando para ajustar el ancho de banda
@@ -49,8 +80,9 @@ def bloquear_cliente(hostname, username, password, client_ip, new_speed):
         finally:
             # Cerrar la conexión
             client.close()
+            actualizar_estado_cliente(id_cliente, "bloqueado")
 
-def desbloquear_cliente(hostname, username, password, client_ip, new_speed):
+def desbloquear_cliente(id_cliente, hostname, username, password, client_ip, new_speed):
         port = 22  # Puerto SSH, generalmente es 22
 
         # Comando para ajustar el ancho de banda
@@ -86,6 +118,7 @@ def desbloquear_cliente(hostname, username, password, client_ip, new_speed):
         finally:
             # Cerrar la conexión
             client.close()
+            actualizar_estado_cliente(id_cliente, "activado")
       
 
 def buscar_cliente_por_id(id_cliente):
@@ -123,8 +156,9 @@ def vista_bloqueo_desbloque():
         username = credenciales['usuario']
         password = credenciales['password']
         client_ip = ip_entry.get()
+        id_cliente = id_entry.get()
         new_speed = "1k/1k"
-        bloquear_cliente(hostname, username, password, client_ip, new_speed)
+        bloquear_cliente(id_cliente, hostname, username, password, client_ip, new_speed)
         
     def obtener_datos_desbloque():
         credenciales = leer_credenciales()
@@ -133,7 +167,8 @@ def vista_bloqueo_desbloque():
         password = credenciales['password']
         client_ip = ip_entry.get()
         new_speed = velocidad_entry.get()
-        desbloquear_cliente(hostname, username, password, client_ip, new_speed)
+        id_cliente = id_entry.get()
+        desbloquear_cliente(id_cliente, hostname, username, password, client_ip, new_speed)
 
 
 

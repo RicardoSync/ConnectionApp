@@ -311,6 +311,7 @@ def create_main_window():
     tree.tag_configure("activado", background="lightgreen")
     tree.tag_configure("suspendido", background="lightcoral")
     tree.tag_configure("desactivado", background="lightgray")
+    tree.tag_configure("bloqueado", background="lightyellow")
     
     # Colocar el Treeview en la ventana principal
     tree.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
