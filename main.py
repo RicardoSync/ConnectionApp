@@ -202,6 +202,7 @@ def create_main_window():
         icon_path = "icons/logo.png"  # Reemplaza con la ruta de tu archivo .png
         img = tk.PhotoImage(file=icon_path)
         root.iconphoto(True, img)
+
     # Crear la barra de menú
     menu_bar = Menu(root)
 
@@ -242,6 +243,15 @@ def create_main_window():
     opciones_bot.add_command(label="Enviar mensaje personalizado", command=vista_mensaje_personal)
     menu_bar.add_cascade(label="BotWhatsApp", menu=opciones_bot)
 
+
+    configuracion = Menu(menu_bar, tearoff=0)
+    configuracion.add_command(label="Cambiar logo recibo", command=llamar_gestor_logo)
+    configuracion.add_command(label="Cambiar usuario y clave", command=usuarios_ventana)
+    configuracion.add_command(label="Cambiar informacion Recibo", command=nombre_wisp)
+    configuracion.add_command(label="Prueba de Conexion Microtik", command=inicar_prueba)
+    configuracion.add_command(label="Prueba de Conexion Internet", command=inicio_de_test)
+    menu_bar.add_cascade(label="Configuracion", menu=configuracion)
+
     # Crear opción de creación de base
     creacion_base = Menu(menu_bar, tearoff=0)
     creacion_base.add_command(label="?", command=version)
@@ -250,12 +260,7 @@ def create_main_window():
     menu_bar.add_cascade(label="Información", menu=creacion_base)
 
 
-    configuracion = Menu(menu_bar, tearoff=0)
-    configuracion.add_command(label="Cambiar logo recibo", command=llamar_gestor_logo)
-    configuracion.add_command(label="Cambiar usuario y clave", command=usuarios_ventana)
-    configuracion.add_command(label="Prueba de Conexion Microtik", command=inicar_prueba)
-    configuracion.add_command(label="Prueba de Conexion Internet", command=inicio_de_test)
-    menu_bar.add_cascade(label="Configuracion", menu=configuracion)
+
 
     # Mostrar la barra de menú
     root.config(menu=menu_bar)
@@ -398,6 +403,18 @@ def crear_usuario_y_contrasena():
     user_window.title("Crear Usuario")
     user_window.geometry("300x250")
     user_window.resizable(False, False)
+
+    # Detectar el sistema operativo
+    if platform.system() == "Windows":
+        # Establecer el ícono de la aplicación en Windows
+        icon_path = "icons/icono.ico"  # Reemplaza con la ruta de tu archivo .ico
+        user_window.iconbitmap(icon_path)
+    elif platform.system() == "Linux":
+        # Establecer el ícono de la aplicación en Linux usando un archivo .png
+        icon_path = "icons/logo.png"  # Reemplaza con la ruta de tu archivo .png
+        img = tk.PhotoImage(file=icon_path)
+        user_window.iconphoto(True, img)
+
     Label(user_window, text="Nombre de usuario:").pack(pady=5)
     username_entry = Entry(user_window)
     username_entry.pack(pady=5)
@@ -424,6 +441,19 @@ def iniciar_sesion():
     login_window.title("Iniciar Sesión")
     login_window.geometry("300x250")
     login_window.resizable(False,False)
+
+    # Detectar el sistema operativo
+    if platform.system() == "Windows":
+        # Establecer el ícono de la aplicación en Windows
+        icon_path = "icons/icono.ico"  # Reemplaza con la ruta de tu archivo .ico
+        login_window.iconbitmap(icon_path)
+    elif platform.system() == "Linux":
+        # Establecer el ícono de la aplicación en Linux usando un archivo .png
+        icon_path = "icons/logo.png"  # Reemplaza con la ruta de tu archivo .png
+        img = tk.PhotoImage(file=icon_path)
+        login_window.iconphoto(True, img)
+
+
     Label(login_window, text="Nombre de usuario:").pack(pady=5)
     username_entry = Entry(login_window)
     username_entry.pack(pady=5)
@@ -457,6 +487,18 @@ else:
     activation_window.title("Activación")
     activation_window.geometry("300x150")
     activation_window.resizable(False, False)
+
+    # Detectar el sistema operativo
+    if platform.system() == "Windows":
+        # Establecer el ícono de la aplicación en Windows
+        icon_path = "icons/icono.ico"  # Reemplaza con la ruta de tu archivo .ico
+        activation_window.iconbitmap(icon_path)
+    elif platform.system() == "Linux":
+        # Establecer el ícono de la aplicación en Linux usando un archivo .png
+        icon_path = "icons/logo.png"  # Reemplaza con la ruta de tu archivo .png
+        img = tk.PhotoImage(file=icon_path)
+        activation_window.iconphoto(True, img)
+
 
     activation_key = StringVar()
 

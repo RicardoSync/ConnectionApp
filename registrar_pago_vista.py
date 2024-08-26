@@ -50,7 +50,7 @@ def obtener_datos_registrar_pago():
     id_cliente = id_entry.get()
     nombreCliente = nombre_entry.get()
     mensualidad = mensualidad_entry.get()
-        
+    efectivo = efectivo_entry.get()
     fechaActual = datetime.now()
     fechaPago = fechaActual.strftime('%Y-%m-%d')
 
@@ -59,18 +59,18 @@ def obtener_datos_registrar_pago():
 
     estado = 'activado'
 
-    registrar_pago_recibo(id_cliente, nombreCliente, mensualidad, fechaPago, estado, proximoPago)
+    registrar_pago_recibo(id_cliente, nombreCliente, mensualidad, fechaPago, estado, proximoPago, efectivo)
 
 def ventana_buscar_cliente_pagar():
     def obtener_datos():
         id_cliente = id_entry.get()        
         buscar_cliente_por_id(id_cliente)
 
-    global id_entry, nombre_entry, direccion_entry, telefono_entry, equipos_entry, ip_entry, velocidad_entry, fecha_instalacion_entry, proximo_pago_entry, mensualidad_entry, estado_entry, api_entry
+    global id_entry, nombre_entry, ip_entry,  mensualidad_entry, efectivo_entry
 
     vistaRegistro = Tk()
     vistaRegistro.title("Registrar Pago")
-    vistaRegistro.geometry("600x200")
+    vistaRegistro.geometry("750x200")
     vistaRegistro.resizable(False, False)
 
     id_label = Label(vistaRegistro, text="Id del Cliente")
@@ -87,6 +87,9 @@ def ventana_buscar_cliente_pagar():
     mensualidad_label = Label(vistaRegistro, text="Mensualidad")
     mensualidad_entry = Entry(vistaRegistro, width=20)
 
+    efectivo_label = Label(vistaRegistro, text="Efectivo")
+    efectivo_entry = Entry(vistaRegistro, width=20)
+
 
     id_label.grid(column=0, row=0, padx=10, pady=10)
     id_entry.grid(column=1, row=0, padx=10, pady=10)
@@ -100,6 +103,9 @@ def ventana_buscar_cliente_pagar():
 
     mensualidad_label.grid(column=0, row=2, padx=10, pady=10)
     mensualidad_entry.grid(column=1, row=2, padx=10, pady=10)
+
+    efectivo_label.grid(column=2, row=2, padx=10, pady=10)
+    efectivo_entry.grid(column=3, row=2, padx=10, pady=10)
 
     # Crear un Frame para agrupar los botones
     frame_botones = Frame(vistaRegistro)
