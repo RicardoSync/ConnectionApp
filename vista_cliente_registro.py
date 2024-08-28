@@ -3,7 +3,6 @@ from tkinter import ttk
 from guardar_cliente import registrar_cliente
 from datetime import datetime, timedelta
 from tkinter import messagebox
-from plyer import notification
 
 equiposA = ["LiteBeam M5 & Router",  "LiteBeam AC & Router",
            "NanoBeam M5 & Router",
@@ -16,6 +15,8 @@ velocidades = ["100M/10M", "100M/15M", "100M/20M", "100M/25M", "100M/30M", "100M
 
 
 mensualidades = ["200", "250", "300", "350", "400", "450", "500"]
+
+dias = [str(dia) for dia in range(1, 32)]
 
 def ventana_principal_registro():
 
@@ -44,7 +45,9 @@ def ventana_principal_registro():
         mensualidad = mensualidadEntrada.get()
         estado = "activado"
         api = entApi.get()
-        registrar_cliente(nombre, direccion, telefono, equipos, ip, velocidad, fechaInstalacion, proximoPago, mensualidad, estado, api)
+        diaCorte = dia_corte_entry.get()
+
+        registrar_cliente(nombre, direccion, telefono, equipos, ip, velocidad, fechaInstalacion, diaCorte, proximoPago, mensualidad, estado, api)
         limpiar()
         messagebox.showinfo("Registro", "Cliente registrado: " + nombre)
         vistaRegistro.destroy()
@@ -190,14 +193,24 @@ def ventana_principal_registro():
         pady=10
     )
     
-    lbApi = Label(vistaRegistro, text="Llave ApO")
+    lbApi = Label(vistaRegistro, text="Llave API")
     entApi = Entry(vistaRegistro, width=25)
+
+
+    dia_corte = Label(vistaRegistro, text="Dia de corte")
+    dia_corte_entry = ttk.Combobox(vistaRegistro,
+                                   values=dias,
+                                   width=25)
 
     lbApi.grid(row=3, column=2)
     entApi.grid(row=3, column=3)
+
+    dia_corte.grid(row=4, column=0, padx=10, pady=10)
+    dia_corte_entry.grid(row=4, column=1, padx=10, pady=10)
+
     # Crear un Frame para agrupar los botones
     frame_botones = Frame(vistaRegistro)
-    frame_botones.grid(column=0, row=4, columnspan=4, padx=10, pady=10)
+    frame_botones.grid(column=0, row=5, columnspan=4, padx=10, pady=10)
 
     # Botón Guardar
     guardar = Button(frame_botones,

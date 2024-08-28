@@ -16,6 +16,7 @@ def crear_base_datos():
             ip TEXT NOT NULL,
             velocidad TEXT NOT NULL,
             fechaInstalacion TEXT NOT NULL,
+            diaCorte TEXT NOT NULL,
             proximoPago TEXT NOT NULL,
             mensualidad REAL NOT NULL,
             estado TEXT NOT NULL,

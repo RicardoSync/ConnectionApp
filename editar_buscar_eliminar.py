@@ -11,7 +11,7 @@ def buscar_cliente_por_id(id_cliente):
 
     conn = sqlite3.connect('network_software.db')
     cursor = conn.cursor()
-    cursor.execute('SELECT nombre, direccion, telefono, equipos, ip, velocidad, fechaInstalacion, proximoPago, mensualidad, estado, api FROM clientes WHERE id=?', (cliente_id,))
+    cursor.execute('SELECT nombre, direccion, telefono, equipos, ip, velocidad, fechaInstalacion, diaCorte, proximoPago, mensualidad, estado, api FROM clientes WHERE id=?', (cliente_id,))
     cliente = cursor.fetchone()
     conn.close()
 
@@ -28,9 +28,10 @@ def buscar_cliente_por_id(id_cliente):
         ip_entry.insert(0, cliente[4])
         velocidad_entry.delete(0, tk.END)
         velocidad_entry.insert(0, cliente[5])
-
+        dia_corte_entry.delete(0, tk.END)
+        dia_corte_entry.insert(0, cliente[7])
         mensualidad_entry.delete(0, tk.END)
-        mensualidad_entry.insert(0, cliente[8])
+        mensualidad_entry.insert(0, cliente[9])
 
     else:
         messagebox.showinfo("Información", "Cliente no encontrado.")
@@ -44,26 +45,25 @@ def actualizar_cliente_gui():
     equipos = equipos_entry.get()
     ip = ip_entry.get()
     velocidad = velocidad_entry.get()
+    dia_corte = dia_corte_entry.get()
     mensualidad = mensualidad_entry.get()
 
     if not cliente_id:
         messagebox.showerror("Error", "El ID del cliente es necesario para actualizar.")
         return
 
-    actualizar_cliente(cliente_id, nombre, direccion, telefono, equipos, ip, velocidad, mensualidad)
+    actualizar_cliente(cliente_id, nombre, direccion, telefono, equipos, ip, velocidad, dia_corte, mensualidad)
     messagebox.showinfo("Información", "Cliente actualizado correctamente.")
 
-def actualizar_cliente(cliente_id, nombre, direccion, telefono, equipos, ip, velocidad, mensualidad):
+def actualizar_cliente(cliente_id, nombre, direccion, telefono, equipos, ip, velocidad, dia_corte, mensualidad):
     conn = sqlite3.connect('network_software.db')
     cursor = conn.cursor()
     cursor.execute('''
-        UPDATE clientes SET nombre = ?, direccion = ?, telefono = ?, equipos = ?, ip = ?, velocidad = ?,
-                   mensualidad = ?
+        UPDATE clientes SET nombre = ?, direccion = ?, telefono = ?, equipos = ?, ip = ?, velocidad = ?, diaCorte = ?, mensualidad = ?
         WHERE id = ?
-    ''', (nombre, direccion, telefono, equipos, ip, velocidad, mensualidad, cliente_id))
+    ''', (nombre, direccion, telefono, equipos, ip, velocidad, dia_corte, mensualidad, cliente_id))
     conn.commit()
     conn.close()
-
 
 def eliminar_cliente(cliente_id):
     conn = sqlite3.connect('network_software.db')
@@ -72,7 +72,6 @@ def eliminar_cliente(cliente_id):
     conn.commit()
     conn.close()
     messagebox.showinfo("Eliminado", "Cliente eliminado de manera correcta")
-
 
 def ventana_buscar_actualizar():
     def obtener_datos():
@@ -83,12 +82,11 @@ def ventana_buscar_actualizar():
         cliente_id = id_entry.get()
         eliminar_cliente(cliente_id)
 
-
-    global id_entry, nombre_entry, direccion_entry, telefono_entry, equipos_entry, ip_entry, velocidad_entry, fecha_instalacion_entry, proximo_pago_entry, mensualidad_entry, estado_entry, api_entry
+    global id_entry, nombre_entry, direccion_entry, telefono_entry, equipos_entry, ip_entry, velocidad_entry, dia_corte_entry, mensualidad_entry, estado_entry, api_entry
 
     vistaRegistro = tk.Tk()
     vistaRegistro.title("Actualizar & Eliminar")
-    vistaRegistro.geometry("750x300")
+    vistaRegistro.geometry("750x350")
     vistaRegistro.resizable(False, False)
 
     id_label = tk.Label(vistaRegistro, text="Id del Cliente")
@@ -114,11 +112,13 @@ def ventana_buscar_actualizar():
     velocidad_label = tk.Label(vistaRegistro, text="Velocidad")
     velocidad_entry = tk.Entry(vistaRegistro, width=25)
 
+    dia_corte_label = tk.Label(vistaRegistro, text="Día de Corte")
+    dia_corte_entry = tk.Entry(vistaRegistro, width=25)
 
     mensualidad_label = tk.Label(vistaRegistro, text="Mensualidad")
     mensualidad_entry = tk.Entry(vistaRegistro, width=25)
 
-    api_label = tk.Label (vistaRegistro, text="ApI")
+    api_label = tk.Label(vistaRegistro, text="API")
     ent_api = tk.Entry(vistaRegistro, width=25)
 
     id_label.grid(column=0, row=0, padx=10, pady=10)
@@ -143,10 +143,11 @@ def ventana_buscar_actualizar():
     velocidad_label.grid(column=2, row=3, padx=10, pady=10)
     velocidad_entry.grid(column=3, row=3, padx=10, pady=10)
 
-    mensualidad_label.grid(column=0, row=5, padx=10, pady=10)
-    mensualidad_entry.grid(column=1, row=5, padx=10, pady=10)
+    dia_corte_label.grid(column=0, row=4, padx=10, pady=10)
+    dia_corte_entry.grid(column=1, row=4, padx=10, pady=10)
 
-
+    mensualidad_label.grid(column=2, row=4, padx=10, pady=10)
+    mensualidad_entry.grid(column=3, row=4, padx=10, pady=10)
 
     # Crear un Frame para agrupar los botones
     frame_botones = tk.Frame(vistaRegistro)
@@ -164,4 +165,3 @@ def ventana_buscar_actualizar():
     cancela.pack(side=tk.LEFT, padx=5)
 
     vistaRegistro.mainloop()
-

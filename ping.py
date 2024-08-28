@@ -41,6 +41,7 @@ class PingApp:
     def ping_ip(self, ip):
         # Determinar el comando de ping según el sistema operativo
         if platform.system() == "Windows":
+            messagebox.showinfo("Precaucion", "Es posible que la opcion presente fallos en Windows 10 y 11. Te recomiendo usarlo en Debian 12 u otro linux ")
             command = ["ping", ip]
         else:  # Asumir que es Linux
             command = ["ping", "-c", "4", ip]

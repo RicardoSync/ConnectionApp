@@ -24,7 +24,6 @@ from enviar_mensaje_personal import vista_mensaje_personal
 from enviar_mensaje_automatoco_vs import comprobacion_de_mensaje_definido
 from ping import iniciar_tarea
 from leases import mostrar_leases
-from test_ancho_de_banda import crear_interfaz
 import platform
 from carpeta_recibos  import crear_ventana
 from pathlib import Path
@@ -32,6 +31,7 @@ from cambiar_logo import llamar_gestor_logo
 from usuarios import usuarios_ventana
 from test_mk import inicar_prueba
 from test_internet import inicio_de_test
+from cortes_dias import bloqueo_por_dias
 
 valid_keys = ['MoCawN07gMSYraorEKCD', 'bdNfUCMwvCJ2D8vIjmnD',
               '6IWqROUMkBhgpolTubDx', 'SMDle3q7ATJmiHRRusKC',
@@ -129,7 +129,7 @@ velocidades = ["100M/10M", "100M15M", "100M/20M", "100M/25M", "100M/30M", "100M/
 def leer_usuarios(nombre="", direccion="", telefono=""):
     conn = sqlite3.connect('network_software.db')
     cursor = conn.cursor()
-    query = 'SELECT id, nombre, direccion, telefono, api, ip, estado, proximoPago FROM clientes WHERE 1=1'
+    query = 'SELECT id, nombre, direccion, telefono, api, ip, estado, proximoPago, diaCorte FROM clientes WHERE 1=1'
     
     params = []
     if nombre:
@@ -147,14 +147,14 @@ def leer_usuarios(nombre="", direccion="", telefono=""):
     conn.close()
     return usuarios
 
-# Función para cargar usuarios en la tabla
 def cargar_usuarios():
     for item in tree.get_children():
         tree.delete(item)
     usuarios = leer_usuarios()
     for usuario in usuarios:
-        estado = usuario[6].lower()
+        estado = usuario[6].lower()  # Cambié el índice a 6 para reflejar la posición correcta de 'estado'
         tree.insert("", tk.END, values=usuario, tags=(estado,))
+
 # Función para actualizar la tabla
 def actualizar_tabla():
     # Limpia la tabla
@@ -225,13 +225,11 @@ def create_main_window():
     # Crear el menú Herramientas de red
     herramientas_red_menu = Menu(menu_bar, tearoff=0)
     herramientas_red_menu.add_command(label="Enviar Ping", command=iniciar_tarea)
-    herramientas_red_menu.add_command(label="Iniciar Fast", command=crear_interfaz)
-    herramientas_red_menu.add_command(label="Credenciales Microtik", command=credenciales_microtik)
     herramientas_red_menu.add_command(label="Cambio Velocidad", command=ventana_cambio_velocidad)
-    herramientas_red_menu.add_command(label="Desbloquear/Bloquear Cliente", command=desbloquear_cliente)
-    herramientas_red_menu.add_command(label="Cortes Automáticos", command=cortes_automaticos)
     herramientas_red_menu.add_command(label="Mostrar Clientes Leases", command=mostrar_leases)
     herramientas_red_menu.add_command(label="Reiniciar antena", command=reiniciar)
+    herramientas_red_menu.add_command(label="Prueba de Conexion Microtik", command=inicar_prueba)
+    herramientas_red_menu.add_command(label="Prueba de Conexion Internet", command=inicio_de_test)
     menu_bar.add_cascade(label="Herramientas de red", menu=herramientas_red_menu)
     
 
@@ -243,13 +241,19 @@ def create_main_window():
     opciones_bot.add_command(label="Enviar mensaje personalizado", command=vista_mensaje_personal)
     menu_bar.add_cascade(label="BotWhatsApp", menu=opciones_bot)
 
+    menu_cortes = Menu(menu_bar, tearoff=0)
+    menu_cortes.add_command(label="Desbloquear/Bloquear Cliente", command=desbloquear_cliente)
+    menu_cortes.add_command(label="Cortes Automáticos", command=cortes_automaticos)
+    menu_cortes.add_command(label="Corte por Dia", command=bloqueo_por_dias)
+    menu_bar.add_cascade(label="Opciones de Cortes", menu=menu_cortes)
+
 
     configuracion = Menu(menu_bar, tearoff=0)
+    configuracion.add_command(label="Credenciales Microtik", command=credenciales_microtik)
     configuracion.add_command(label="Cambiar logo recibo", command=llamar_gestor_logo)
     configuracion.add_command(label="Cambiar usuario y clave", command=usuarios_ventana)
     configuracion.add_command(label="Cambiar informacion Recibo", command=nombre_wisp)
-    configuracion.add_command(label="Prueba de Conexion Microtik", command=inicar_prueba)
-    configuracion.add_command(label="Prueba de Conexion Internet", command=inicio_de_test)
+
     menu_bar.add_cascade(label="Configuracion", menu=configuracion)
 
     # Crear opción de creación de base
@@ -291,8 +295,8 @@ def create_main_window():
 
     # Crear Treeview para mostrar datos
     global tree
-    tree = ttk.Treeview(marco_principal, columns=("Id", "Nombre", "Direccion", "Telefono", "api", "IP", "Estado", "ProximoPago"), show="headings")
-    
+    tree = ttk.Treeview(marco_principal, columns=("Id", "Nombre", "Direccion", "Telefono", "api", "IP", "Estado", "ProximoPago", "DiaCorte"), show="headings")
+
     # Definir las columnas
     tree.heading("Id", text="Id")
     tree.heading("Nombre", text="Nombre")
@@ -302,7 +306,8 @@ def create_main_window():
     tree.heading("IP", text="IP")
     tree.heading("Estado", text="Estado")
     tree.heading("ProximoPago", text="Proximo Pago")
-    
+    tree.heading("DiaCorte", text="Dia de Corte")  # Nueva columna
+
     # Definir el ancho de las columnas
     tree.column("Nombre", width=150)
     tree.column("Direccion", width=150)
@@ -311,16 +316,16 @@ def create_main_window():
     tree.column("IP", width=100)
     tree.column("Estado", width=100)
     tree.column("ProximoPago", width=150)
+    tree.column("DiaCorte", width=100)  # Ancho de la nueva columna
 
     # Configurar las etiquetas de estilo
     tree.tag_configure("activado", background="lightgreen")
     tree.tag_configure("suspendido", background="lightcoral")
     tree.tag_configure("desactivado", background="lightgray")
     tree.tag_configure("bloqueado", background="lightyellow")
-    
+
     # Colocar el Treeview en la ventana principal
     tree.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
-    
     # Crear el menú contextual
     global menu_contextual
     menu_contextual = Menu(root, tearoff=0)
