@@ -32,6 +32,8 @@ from usuarios import usuarios_ventana
 from test_mk import inicar_prueba
 from test_internet import inicio_de_test
 from cortes_dias import bloqueo_por_dias
+from actualizar_tabla import agregar_columna_diaCorte
+from clientes_activos import antenas_activas
 
 valid_keys = ['MoCawN07gMSYraorEKCD', 'bdNfUCMwvCJ2D8vIjmnD',
               '6IWqROUMkBhgpolTubDx', 'SMDle3q7ATJmiHRRusKC',
@@ -76,6 +78,7 @@ url = "https://www.facebook.com/profile.php?id=100065750894627"
 
 
 crear_base_datos()
+agregar_columna_diaCorte()
 
 def verify_activation_key(input_key):
     return input_key in valid_keys
@@ -225,9 +228,10 @@ def create_main_window():
     # Crear el menú Herramientas de red
     herramientas_red_menu = Menu(menu_bar, tearoff=0)
     herramientas_red_menu.add_command(label="Enviar Ping", command=iniciar_tarea)
+    herramientas_red_menu.add_command(label="Reiniciar Antena", command=reiniciar)
+    herramientas_red_menu.add_command(label="Antenas Activadas", command=antenas_activas)
     herramientas_red_menu.add_command(label="Cambio Velocidad", command=ventana_cambio_velocidad)
     herramientas_red_menu.add_command(label="Mostrar Clientes Leases", command=mostrar_leases)
-    herramientas_red_menu.add_command(label="Reiniciar antena", command=reiniciar)
     herramientas_red_menu.add_command(label="Prueba de Conexion Microtik", command=inicar_prueba)
     herramientas_red_menu.add_command(label="Prueba de Conexion Internet", command=inicio_de_test)
     menu_bar.add_cascade(label="Herramientas de red", menu=herramientas_red_menu)
@@ -323,6 +327,7 @@ def create_main_window():
     tree.tag_configure("suspendido", background="lightcoral")
     tree.tag_configure("desactivado", background="lightgray")
     tree.tag_configure("bloqueado", background="lightyellow")
+    tree.tag_configure("inactivo", background="red")
 
     # Colocar el Treeview en la ventana principal
     tree.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
